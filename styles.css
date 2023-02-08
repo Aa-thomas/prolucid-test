@@ -12,6 +12,7 @@ input {
    border-radius: 20px;
    border: none;
    height: 100%;
+   padding: 0 20px
 }
 
 button {
@@ -20,10 +21,16 @@ button {
    border: none;
    height: 100%;
    width: 100px;
+   cursor: pointer;
 }
 
 h1 {
    text-align: center;
+}
+
+h2 {
+   text-align: center;
+   margin: 5% auto;
 }
 
 .userInput{
@@ -35,6 +42,10 @@ h1 {
 .sortedText {
    text-align: left;
    border-radius: 10px;
+   background-color: rgb(26,26,26);
+   padding:10px;
+   cursor: pointer;
+   line-height:200%;
 }
 
 .sortedText p::first-letter {

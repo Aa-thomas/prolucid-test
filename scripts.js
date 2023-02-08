@@ -21,53 +21,76 @@
 
 // Namespace
 const app = {
-	init: () => {
-		// Add Event listener to button
+	init: function () {
+		// add event listener for sort button
 		document.querySelector('button').addEventListener('click', (e) => {
 			const userInput = document.querySelector('input').value;
 			app.sortAlphabetically(userInput);
 		});
-	},
-};
-
-// This regex pattern is used to match English sentences that end with !, . , or ?.
-app.sentenceEndingRegex = /[.?!]+\s+/;
-
-// This regex pattern is used to match any that is NOT a number, letter, space, period, question mark, exclamation point, apostrophe or comma.
-app.punctuationRegex = /[^0-9a-zA-Z\s.?!\']/g;
-
-//
-app.sortAlphabetically = (userInputText) => {
-	// store in an array
-	const textToBeSorted = [userInputText];
-
-	// remove punctuation like double quotes, brackets, hyphens (see `punctuationRegex` above)
-	const textWithoutPunctuation = textToBeSorted[0].replace(
-		app.punctuationRegex,
-		' '
-	);
-
-	// Split the text into sentances ending with . ? ! (see `sentenceEndingRegex` above)
-	const splitText = textWithoutPunctuation.split(app.sentenceEndingRegex);
-
-	// If  the corresponding letters are compared and sentanceA comes before sentance B, sentenceA comes first. Compares all letters in the first word only.
-	const sortedText = splitText.sort((sentenceA, sentenceB) => {
-		if (sentenceA.toLowerCase() < sentenceB.toLowerCase()) return -1;
-		if (sentenceA.toLowerCase() > sentenceB.toLowerCase()) return +1;
-		return 0;
-	});
-
-	// Append sentences to the page
-	document.querySelector('.sortedText').innerHTML = '';
-	sortedText.forEach((sentence) => {
-		sentence = `<p>${sentence}</p>`;
+		// add event listener for copyToClipboard
 		document
 			.querySelector('.sortedText')
-			.insertAdjacentHTML('beforeend', sentence);
-	});
+			.addEventListener('click', () => app.copyToClipboard());
+	},
 
-	console.table(sortedText);
-	return sortedText;
+	printToPage: function (text) {
+		// if the value in the input is empty don't run
+		if (!document.querySelector('input').value) return;
+
+		document.querySelector('.sortedText').innerHTML = '';
+		text.forEach((sentence) => {
+			sentence = `<p>${sentence}</p>`;
+			document
+				.querySelector('.sortedText')
+				.insertAdjacentHTML('beforeend', sentence);
+		});
+	},
+
+	copyToClipboard: async function () {
+		let text = document.querySelector('.sortedText').textContent;
+		try {
+			await navigator.clipboard.writeText(text);
+			alert('Content copied to clipboard!');
+		} catch (err) {
+			alert('Failed to copy: ', err);
+		}
+	},
+
+	// This regex pattern is used to match English sentences that end with !, . , or ?.
+	punctuationRegex: /[^0-9a-zA-Z\s.?!\']/g,
+
+	// This regex pattern is used to match any that is NOT a number, letter, space, period, question mark, exclamation point, apostrophe or comma.
+	sentenceEndingRegex: /[.?!]+\s+/,
+
+	sortAlphabetically: function (userInputText) {
+		// if the value in userInputText is empty don't run
+		if (!document.querySelector('input').value) return;
+
+		// store in an array
+		let textToBeSorted = [userInputText];
+
+		// remove punctuation like double quotes, brackets, hyphens (see `punctuationRegex` above)
+		const textWithoutPunctuation = textToBeSorted[0].replace(
+			app.punctuationRegex,
+			''
+		);
+
+		// Split the text into sentances ending with . ? ! (see `sentenceEndingRegex` above)
+		const splitText = textWithoutPunctuation.split(app.sentenceEndingRegex);
+
+		// If  the corresponding letters are compared and sentanceA comes before sentance B, sentenceA gets lower index and placed first. Compares all letters in the first word only.
+		const sortedText = splitText.sort((sentenceA, sentenceB) => {
+			if (sentenceA.toLowerCase() < sentenceB.toLowerCase()) return -1;
+			if (sentenceA.toLowerCase() > sentenceB.toLowerCase()) return +1;
+			return 0;
+		});
+
+		// Append sentences to the page
+		app.printToPage(sortedText);
+
+		console.table(sortedText);
+		return sortedText;
+	},
 };
 
 // Initialize our app
