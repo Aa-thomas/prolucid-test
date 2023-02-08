@@ -57,10 +57,10 @@ const app = {
 	},
 
 	// This regex pattern is used to match English sentences that end with !, . , or ?.
-	punctuationRegex: /[^0-9a-zA-Z\s.?!\']/g,
+	sentenceEndingRegex: /[.?!]+\s+/,
 
 	// This regex pattern is used to match any that is NOT a number, letter, space, period, question mark, exclamation point, apostrophe or comma.
-	sentenceEndingRegex: /[.?!]+\s+/,
+	punctuationRegex: /[^0-9a-zA-Z\s.?!\']/g,
 
 	sortAlphabetically: function (userInputText) {
 		// if the value in userInputText is empty don't run
